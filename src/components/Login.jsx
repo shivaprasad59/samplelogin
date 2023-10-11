@@ -12,6 +12,8 @@ import * as Yup from "yup";
 import {auth}from '../firebase'
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { common } from "@mui/material/colors";
 export default function Form() {
 
  const navigate=useNavigate();
@@ -33,6 +35,16 @@ export default function Form() {
     .then((credentials)=>{
       console.log(credentials);
      navigate("/sample")
+      const sendToken=async()=>{
+        await axios.post("http://localhost:8080/",credentials.json())
+        .then((res)=>{
+          console.log(res);
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+      }
+      sendToken();
     })
     .catch((err)=>{
       console.log(err);
