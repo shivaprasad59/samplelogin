@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -13,9 +13,8 @@ import {auth}from '../firebase'
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { common } from "@mui/material/colors";
 export default function Form() {
-
+const [tokenid,setTokenid]=useState("")
  const navigate=useNavigate();
   const validationSchema = Yup.object().shape({
     email: Yup.string().required("Email is required").email("Email is invalid"),
@@ -33,10 +32,17 @@ export default function Form() {
     console.log(data);
     signInWithEmailAndPassword(auth,data.email,data.password)
     .then((credentials)=>{
-      console.log(credentials);
-     navigate("/sample")
+      setTokenid(credentials._tokenResponse.idToken);
+      console.log(credentials._tokenResponse.idToken);
+     alert("Successfull")
       const sendToken=async()=>{
-        await axios.post("http://localhost:8080/",credentials.json())
+        await axios.post("http://localhost:8080/",{
+          method:"POST",
+          headers:{
+            'Content-Type':'application/json',
+            'Authorization':`Bearer ${tokenid}`
+          }
+        })
         .then((res)=>{
           console.log(res);
         })
